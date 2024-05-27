@@ -10,7 +10,7 @@ export default function MaxWidthWrapper({
   className,
 }: MaxWidthWrapperProps) {
   return (
-    <section className={cn("w-full max-w-7xl mx-auto", className)}>
+    <section className={cn("w-full max-w-5xl mx-auto", className)}>
       {children}
     </section>
   );
