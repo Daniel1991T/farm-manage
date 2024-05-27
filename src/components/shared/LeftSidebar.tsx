@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 import { sidebarLinks } from "@/constants";
 import { SignedIn } from "@clerk/nextjs";
 import Link from "next/link";
