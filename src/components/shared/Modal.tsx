@@ -13,7 +13,7 @@ export default function Modal({ triggerTitle, children }: ModalProps) {
         <LucidePlus />
         {triggerTitle}
       </DialogTrigger>
-      <DialogContent>{children}</DialogContent>
+      <DialogContent className="max-w-3xl">{children}</DialogContent>
     </Dialog>
   );
 }

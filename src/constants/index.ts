@@ -1,4 +1,4 @@
-import { SidebarLink } from "@/types";
+import { SelectOptionType, SidebarLink } from "@/types";
 
 export const sidebarLinks: SidebarLink[] = [
   {
@@ -30,5 +30,16 @@ export const sidebarLinks: SidebarLink[] = [
     imgURL: "/assets/icons/file-output.svg",
     route: "/outputs",
     label: "Iesiri",
+  },
+];
+
+export const AnimalGenderOption: SelectOptionType[] = [
+  {
+    label: "Mascul",
+    value: "Mascul",
+  },
+  {
+    label: "Femela",
+    value: "Femela",
   },
 ];

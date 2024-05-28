@@ -3,3 +3,8 @@ export interface SidebarLink {
   route: string;
   label: string;
 }
+
+export type SelectOptionType = {
+  value: string;
+  label: string;
+};
