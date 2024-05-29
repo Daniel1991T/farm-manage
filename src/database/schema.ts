@@ -1,19 +1,25 @@
-import { serial } from "drizzle-orm/mysql-core";
-import { integer, text, boolean, pgTable, date } from "drizzle-orm/pg-core";
+import { InferInsertModel } from "drizzle-orm";
+import { integer, text, pgTable, date } from "drizzle-orm/pg-core";
 
 export const Cow = pgTable("cow", {
-  id: integer("id").primaryKey(),
   name: text("name").notNull(),
-  registration_number: text("registration_number").notNull(),
+  registration_number: text("registration_number")
+    .notNull()
+    .unique()
+    .primaryKey(),
   breed: text("breed").notNull(),
-  greutate: text("greutate").notNull(),
-  stareSanatate: text("stare_sanatate").notNull(),
+  weight: text("weight").notNull(),
+  health_condition: text("health_condition").notNull(),
   sex: text("sex").notNull(),
-  nrMatricolTata: text("nr_matricol_tata").notNull(),
-  nrMatricolMama: text("nr_matricol_mama").notNull(),
-  nrAutorizatie: text("nr_autorizatie"),
-  dataExpirareAutorizatie: date("data_expirare_autorizatie"),
-  dataIntrareFerma: date("data_intrare_ferma").notNull(),
-  culoare: text("culoare").notNull(),
-  poza: text("poza").notNull(),
+  registration_number_father: text("registration_number_father").notNull(),
+  registration_number_mother: text("registration_number_mother").notNull(),
+  number_of_authorization: text("number_of_authorization"),
+  expiration_authorization: text("expiration_authorization"),
+  entry_date: text("entry_date").notNull(),
+  color: text("color").notNull(),
+  image: text("image").notNull(),
+  age: text("age").notNull(),
+  birth_date: text("birth_date").notNull(),
 });
+
+export type CowSchema = InferInsertModel<typeof Cow>;

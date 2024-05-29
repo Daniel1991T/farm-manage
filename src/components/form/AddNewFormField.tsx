@@ -28,9 +28,9 @@ export default function AddNewFormField({
       name={name}
       render={({ field }) => (
         <FormItem className="w-full">
-          <FormLabel>{label}</FormLabel>
+          <FormLabel htmlFor={field.name}>{label}</FormLabel>
           <FormControl>
-            <Input placeholder={placeholder} {...field} />
+            <Input id={field.name} placeholder={placeholder} {...field} />
           </FormControl>
           <FormMessage />
         </FormItem>

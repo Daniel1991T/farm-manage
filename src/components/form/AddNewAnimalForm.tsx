@@ -14,28 +14,34 @@ import ImageUploaderInputField from "./ImageUploaderInputField";
 import { useEffect, useState } from "react";
 import SelectField from "./SelectField";
 import { AnimalGenderOption } from "@/constants";
+import { addCowToDB } from "@/lib/actions/cow";
+import { useServerAction } from "zsa-react";
+import { toast } from "sonner";
+import { handleTZSAErrorMessage } from "@/lib/error-server";
 
 export default function AddNewAnimalForm() {
   const [imageUrl, setImageUrl] = useState("");
   const [gender, setGender] = useState(AnimalGender.FEMALE);
+  const { isPending, execute: addCow, data } = useServerAction(addCowToDB);
   // 1. Define your form.
   const form = useForm<z.infer<typeof addNewAnimalSchema>>({
     resolver: zodResolver(addNewAnimalSchema),
     defaultValues: {
-      name: "",
-      registration_number: "",
+      name: "Bibi",
+      registration_number: "RO525525225233",
       birth_date: new Date().toISOString(),
-      age: "",
-      entry_date: "",
-      breed: "",
-      color: "",
-      expiration_authorization: "",
-      image: "",
-      number_of_authorization: "",
-      registration_number_father: "",
-      registration_number_mother: "",
+      age: "7 ani",
+      entry_date: "25/02/2024",
+      breed: "angus",
+      color: "negru",
+      expiration_authorization: "25/12/2024",
+      image: "test",
+      number_of_authorization: "2525252525",
+      health_condition: "good",
+      registration_number_father: "RO525525225233",
+      registration_number_mother: "RO525525225233",
       sex: AnimalGender.FEMALE,
-      weight: "0kg",
+      weight: "250kg",
     },
   });
 
@@ -55,10 +61,24 @@ export default function AddNewAnimalForm() {
   }, [gender, form]);
 
   // 2. Define a submit handler.
-  function onSubmit(values: z.infer<typeof addNewAnimalSchema>) {
+  async function onSubmit(values: z.infer<typeof addNewAnimalSchema>) {
     // Do something with the form values.
     // ✅ This will be type-safe and validated.
     console.log(values);
+
+    try {
+      const [data, error] = await addCow(values);
+      if (error) {
+        handleTZSAErrorMessage(error);
+      }
+      if (data?.success) {
+        toast.success("Animal adaugat cu succes", {
+          className: "bg-green-500 text-white",
+        });
+      }
+    } catch (error) {
+      console.error(error);
+    }
   }
   return (
     <Form {...form}>
@@ -129,7 +149,11 @@ export default function AddNewAnimalForm() {
           />
         </WidthFullWrapper>
         <WidthFullWrapper>
-          <AddNewFormField form={form} label="Imagine" name="image" />
+          <AddNewFormField
+            form={form}
+            label="Starea de sanatate"
+            name="health_condition"
+          />
           <AddNewFormField
             form={form}
             name="entry_date"
@@ -140,7 +164,7 @@ export default function AddNewAnimalForm() {
           type="submit"
           className="bg-green-700 hover:bg-green-500 transition-all duration-200 ease-linear"
         >
-          Adauga
+          {isPending ? "Se incarca..." : "Adauga"}
         </Button>
       </form>
     </Form>

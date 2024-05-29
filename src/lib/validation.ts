@@ -20,6 +20,7 @@ export const addNewAnimalSchema = z.object({
   image: z.string().optional(),
   weight: z.string().min(1).max(5),
   color: z.string().min(2).max(50),
+  health_condition: z.string().min(2).max(50),
 });
 
 export type AddNewAnimalType = z.infer<typeof addNewAnimalSchema>;
@@ -38,4 +39,5 @@ export type AddNewAnimalNameField =
   | "registration_number_mother"
   | "color"
   | "breed"
-  | "weight";
+  | "weight"
+  | "health_condition";
