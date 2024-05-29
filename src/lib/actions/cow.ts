@@ -13,3 +13,12 @@ export const addCowToDB = createServerAction()
     revalidatePath("/all-animals");
     return { success: true };
   });
+
+export const getAllCows = createServerAction().handler(async () => {
+  try {
+    const cows = await db.select().from(Cow).execute();
+    return cows;
+  } catch (error) {
+    return error;
+  }
+});
