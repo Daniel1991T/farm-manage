@@ -1,5 +1,4 @@
 import LeftSidebar from "@/components/shared/LeftSidebar";
-import Navbar from "@/components/shared/Navbar";
 import React from "react";
 
 const Layout = ({ children }: { children: React.ReactNode }) => {
@@ -7,7 +6,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
     <main className="relative flex items-center justify-center flex-col">
       <div className="w-full flex">
         <LeftSidebar />
-        {children}
+        <div className="flex flex-1">{children}</div>
       </div>
     </main>
   );

@@ -1,11 +1,13 @@
 "use client";
 import {
   ColumnDef,
+  ColumnFiltersState,
   RowModel,
   SortingState,
   VisibilityState,
   flexRender,
   getCoreRowModel,
+  getFilteredRowModel,
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
@@ -24,13 +26,13 @@ import {
   DropdownMenuContent,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { AArrowDown, FilterX } from "lucide-react";
+import { FilterX } from "lucide-react";
 import { deletedCows } from "@/lib/actions/cow";
 import { useServerAction } from "zsa-react";
-import { log } from "console";
 import { CowSchema } from "@/database/schema";
+import { Input } from "@/components/ui/input";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -47,7 +49,7 @@ export default function CowTable<TData, TValue>({
   });
   const [sorting, setSorting] = useState<SortingState>([]);
   const [rowSelection, setRowSelection] = useState({});
-  const [selected, setSelected] = useState<RowModel<TData>>();
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
 
   const table = useReactTable({
     data,
@@ -57,7 +59,9 @@ export default function CowTable<TData, TValue>({
     onSortingChange: setSorting,
     getSortedRowModel: getSortedRowModel(),
     onRowSelectionChange: setRowSelection,
-    state: { columnVisibility, sorting, rowSelection },
+    onColumnFiltersChange: setColumnFilters,
+    getFilteredRowModel: getFilteredRowModel(),
+    state: { columnVisibility, sorting, rowSelection, columnFilters },
   });
 
   const handleDeleteSelected = async () => {
@@ -76,11 +80,37 @@ export default function CowTable<TData, TValue>({
   };
 
   return (
-    <div className="rounded-md border">
-      <div className="py-2 ml-4">
+    <div className="rounded-md border w-full items-start justify-start flex flex-col">
+      <div className="py-2 ml-4 flex w-full justify-start items-start gap-4">
+        <div className="flex items-center">
+          <Input
+            placeholder="Filtereaza dupa nume"
+            value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
+            onChange={(event) =>
+              table.getColumn("name")?.setFilterValue(event.target.value)
+            }
+            className="max-w-sm"
+          />
+        </div>
+        <div className="flex items-center">
+          <Input
+            placeholder="Filtereaza dupa Crotaliu"
+            value={
+              (table
+                .getColumn("registration_number")
+                ?.getFilterValue() as string) ?? ""
+            }
+            onChange={(event) =>
+              table
+                .getColumn("registration_number")
+                ?.setFilterValue(event.target.value)
+            }
+            className="max-w-sm"
+          />
+        </div>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="outline" className="ml-auto gap-2">
+            <Button variant="outline" className="gap-2">
               Filtreaza coloanele <FilterX className="font-medium stroke-1" />
             </Button>
           </DropdownMenuTrigger>
@@ -105,7 +135,7 @@ export default function CowTable<TData, TValue>({
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
-      <Table className="px-2">
+      <Table className="px-2 w-full">
         <TableHeader>
           {table.getHeaderGroups().map((headerGroup) => (
             <TableRow key={headerGroup.id}>
@@ -141,7 +171,7 @@ export default function CowTable<TData, TValue>({
           ) : (
             <TableRow>
               <TableCell colSpan={columns.length} className="h-24 text-center">
-                No results.
+                Nu există animale înregistrate
               </TableCell>
             </TableRow>
           )}
@@ -155,8 +185,13 @@ export default function CowTable<TData, TValue>({
           onClick={handleDeleteSelected}
           variant="link"
           className="hover:text-red-600"
+          disabled={
+            table.getFilteredSelectedRowModel().rows.length === 0 || isPending
+          }
         >
-          Delete All Selected
+          {!isPending
+            ? "Șterge toate randurile selectate"
+            : "In progres pentru a sterge toate vacile selectate"}
         </Button>
       </div>
     </div>

@@ -14,6 +14,7 @@ type AddNewFormFieldProps = {
   name: AddNewAnimalNameField;
   label: string;
   placeholder?: string;
+  disabled?: boolean;
 };
 
 export default function AddNewFormField({
@@ -21,6 +22,7 @@ export default function AddNewFormField({
   name,
   label,
   placeholder,
+  disabled,
 }: AddNewFormFieldProps) {
   return (
     <FormField
@@ -30,7 +32,12 @@ export default function AddNewFormField({
         <FormItem className="w-full">
           <FormLabel htmlFor={field.name}>{label}</FormLabel>
           <FormControl>
-            <Input id={field.name} placeholder={placeholder} {...field} />
+            <Input
+              disabled={disabled}
+              id={field.name}
+              placeholder={placeholder}
+              {...field}
+            />
           </FormControl>
           <FormMessage />
         </FormItem>

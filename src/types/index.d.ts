@@ -8,3 +8,8 @@ export type SelectOptionType = {
   value: string;
   label: string;
 };
+
+export type SearchByRegNumberType = {
+  sex: string;
+  searchRegistrationNumber: string;
+};

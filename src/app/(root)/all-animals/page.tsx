@@ -18,11 +18,11 @@ export default async function AllAnimalsPage() {
     console.log(error);
   }
   return (
-    <section className="flex flex-col mx-0 max-w-screen-lg lg:max-w-screen-xl xl:max-w-screen-2xl">
+    <section className="flex flex-col mx-0 max-w-screen-lg lg:max-w-screen-xl">
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold">Toate Vacile:</h1>
-        <Modal triggerTitle="Adauga animal nou">
-          <AddNewAnimalForm />
+        <Modal triggerTitle="Adauga animal nou" triggerClassName="w-fit">
+          <AddNewAnimalForm type="add" />
         </Modal>
       </div>
       <section className="w-full mx-auto py-10">

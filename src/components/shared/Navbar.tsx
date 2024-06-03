@@ -18,7 +18,7 @@ export default function Navbar() {
             />
             <div className="hidden md:flex items-center justify-center ">
               <h2 className="font-bold text-green-600 text-4xl">Farm</h2>
-              <p className="text-4xl">Manage</p>
+              <p className="text-4xl">Manager</p>
             </div>
           </div>
         </Link>

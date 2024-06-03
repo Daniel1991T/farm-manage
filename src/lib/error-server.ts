@@ -22,6 +22,7 @@ export const handleTZSAErrorMessage = (error: TZSAError) => {
   }
 
   return toast.error(userFriendlyMessage, {
-    className: "bg-red-500 text-white",
+    className: "bg-red-500 text-white border-none",
+    position: "top-center",
   });
 };

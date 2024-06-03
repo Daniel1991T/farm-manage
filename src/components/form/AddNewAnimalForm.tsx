@@ -8,41 +8,39 @@ import { Form } from "@/components/ui/form";
 import { AnimalGender, addNewAnimalSchema } from "@/lib/validation";
 import AddNewFormField from "./AddNewFormField";
 import WidthFullWrapper from "../wrapper/WidthFullWrapper";
-import DataPicker from "./DataPicker";
+import DataPickerFromField from "./DataPicker";
 import { calculateAge } from "@/lib/utils";
 import ImageUploaderInputField from "./ImageUploaderInputField";
 import { useEffect, useState } from "react";
 import SelectField from "./SelectField";
-import { AnimalGenderOption } from "@/constants";
-import { addCowToDB } from "@/lib/actions/cow";
+import { AnimalGenderOption, initialValuesAddNewAnimal } from "@/constants";
+import { addCowToDB, getMatchingCows, updateCow } from "@/lib/actions/cow";
 import { useServerAction } from "zsa-react";
 import { toast } from "sonner";
 import { handleTZSAErrorMessage } from "@/lib/error-server";
+import { DialogClose } from "../ui/dialog";
+import { DropdownMenuItem } from "../ui/dropdown-menu";
+import { SelectSearchFormField } from "./SelectSearchFormField";
+import { SearchByRegNumberType } from "@/types";
 
-export default function AddNewAnimalForm() {
+type AddNewAnimalFormProps = {
+  type: "add" | "update";
+  defaultValues?: z.infer<typeof addNewAnimalSchema>;
+};
+
+export default function AddNewAnimalForm({
+  type,
+  defaultValues,
+}: AddNewAnimalFormProps) {
   const [imageUrl, setImageUrl] = useState("");
   const [gender, setGender] = useState(AnimalGender.FEMALE);
   const { isPending, execute: addCow, data } = useServerAction(addCowToDB);
+  const { isPending: isPendingUpdate, execute: updateCowDB } =
+    useServerAction(updateCow);
   // 1. Define your form.
   const form = useForm<z.infer<typeof addNewAnimalSchema>>({
     resolver: zodResolver(addNewAnimalSchema),
-    defaultValues: {
-      name: "Bibi",
-      registration_number: "RO525525225233",
-      birth_date: new Date().toISOString(),
-      age: "7 ani",
-      entry_date: "25/02/2024",
-      breed: "angus",
-      color: "negru",
-      expiration_authorization: "25/12/2024",
-      image: "test",
-      number_of_authorization: "2525252525",
-      health_condition: "good",
-      registration_number_father: "RO525525225233",
-      registration_number_mother: "RO525525225233",
-      sex: AnimalGender.FEMALE,
-      weight: "250kg",
-    },
+    defaultValues: defaultValues || initialValuesAddNewAnimal,
   });
 
   const handleDateChange = (date: string) => {
@@ -51,6 +49,16 @@ export default function AddNewAnimalForm() {
 
   const calculateAgeOnChange = () => {
     form.setValue("age", calculateAge(form.getValues("birth_date")));
+  };
+
+  const searchByRegNumber = async ({
+    searchRegistrationNumber,
+    sex,
+  }: SearchByRegNumberType) => {
+    return await getMatchingCows({
+      registration_number: searchRegistrationNumber,
+      sex,
+    });
   };
 
   useEffect(() => {
@@ -65,19 +73,36 @@ export default function AddNewAnimalForm() {
     // Do something with the form values.
     // ✅ This will be type-safe and validated.
     console.log(values);
-
-    try {
-      const [data, error] = await addCow(values);
-      if (error) {
-        handleTZSAErrorMessage(error);
+    if (type === "update") {
+      try {
+        const [data, error] = await updateCowDB(values);
+        if (error) {
+          handleTZSAErrorMessage(error);
+        }
+        if (data?.success) {
+          toast.success("Animal updatat cu succes", {
+            className: "bg-green-500 text-white border-none",
+            position: "top-center",
+          });
+        }
+      } catch (error) {
+        console.error(error);
       }
-      if (data?.success) {
-        toast.success("Animal adaugat cu succes", {
-          className: "bg-green-500 text-white",
-        });
+    } else {
+      try {
+        const [data, error] = await addCow(values);
+        if (error) {
+          handleTZSAErrorMessage(error);
+        }
+        if (data?.success) {
+          toast.success("Animal adaugat cu succes", {
+            className: "bg-green-500 text-white border-none",
+            position: "top-center",
+          });
+        }
+      } catch (error) {
+        console.error(error);
       }
-    } catch (error) {
-      console.error(error);
     }
   }
   return (
@@ -95,6 +120,7 @@ export default function AddNewAnimalForm() {
             <AddNewFormField form={form} label="Nume" name="name" />
             <AddNewFormField
               form={form}
+              disabled={type === "update"}
               label="Număr Crotaliu"
               name="registration_number"
             />
@@ -110,8 +136,10 @@ export default function AddNewAnimalForm() {
           </div>
         </WidthFullWrapper>
         <WidthFullWrapper className="justify-center items-end">
-          <DataPicker
-            placeholder="Data nasterii"
+          <DataPickerFromField
+            label="Data Nasterii"
+            form={form}
+            name="birth_date"
             value={form.getValues("birth_date")}
             onChange={handleDateChange}
             calculateAgeOnChange={calculateAgeOnChange}
@@ -137,15 +165,24 @@ export default function AddNewAnimalForm() {
           </WidthFullWrapper>
         )}
         <WidthFullWrapper>
-          <AddNewFormField
+          {/* <AddNewFormField
             form={form}
             label="Nr. Crotaliu tata"
             name="registration_number_father"
+          /> */}
+          <SelectSearchFormField
+            form={form}
+            label="Nr. Crotaliu tata"
+            name="registration_number_father"
+            typeSelect={AnimalGender.MALE}
+            searchFn={searchByRegNumber}
           />
-          <AddNewFormField
+          <SelectSearchFormField
             form={form}
             label="Nr. Crotaliu mama"
             name="registration_number_mother"
+            typeSelect={AnimalGender.FEMALE}
+            searchFn={searchByRegNumber}
           />
         </WidthFullWrapper>
         <WidthFullWrapper>
@@ -154,18 +191,34 @@ export default function AddNewAnimalForm() {
             label="Starea de sanatate"
             name="health_condition"
           />
-          <AddNewFormField
+          <DataPickerFromField
             form={form}
+            label="Data de intrare"
             name="entry_date"
-            label="Data intrari in ferma"
+            value={form.getValues("entry_date")}
+            onChange={(value) => form.setValue("entry_date", value)}
           />
         </WidthFullWrapper>
-        <Button
-          type="submit"
-          className="bg-green-700 hover:bg-green-500 transition-all duration-200 ease-linear"
-        >
-          {isPending ? "Se incarca..." : "Adauga"}
-        </Button>
+        <div className="flex items-center justify-between">
+          {type === "update" ? (
+            <DropdownMenuItem>
+              <Button
+                type="submit"
+                className="bg-green-700 hover:bg-green-500 transition-all duration-200 ease-linear"
+              >
+                {isPendingUpdate ? "Se incarca..." : "Actualizeaza"}
+              </Button>
+            </DropdownMenuItem>
+          ) : (
+            <Button
+              type="submit"
+              className="bg-green-700 hover:bg-green-500 transition-all duration-200 ease-linear"
+            >
+              {isPending ? "Se incarca..." : "Adauga"}
+            </Button>
+          )}
+          <DialogClose className="hover:text-red-500">Închide</DialogClose>
+        </div>
       </form>
     </Form>
   );

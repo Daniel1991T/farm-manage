@@ -1,5 +1,5 @@
 import { InferInsertModel } from "drizzle-orm";
-import { integer, text, pgTable, date } from "drizzle-orm/pg-core";
+import { text, pgTable } from "drizzle-orm/pg-core";
 
 export const Cow = pgTable("cow", {
   name: text("name").notNull(),

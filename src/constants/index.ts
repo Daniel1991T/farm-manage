@@ -1,3 +1,4 @@
+import { AnimalGender } from "@/lib/validation";
 import { SelectOptionType, SidebarLink } from "@/types";
 
 export const sidebarLinks: SidebarLink[] = [
@@ -43,3 +44,38 @@ export const AnimalGenderOption: SelectOptionType[] = [
     value: "Femela",
   },
 ];
+
+export const initialValuesAddNewAnimal = {
+  name: "",
+  registration_number: "",
+  birth_date: new Date().toISOString(),
+  age: "",
+  entry_date: "",
+  breed: "",
+  color: "",
+  expiration_authorization: "",
+  image: "",
+  number_of_authorization: "",
+  health_condition: "",
+  registration_number_father: "",
+  registration_number_mother: "",
+  sex: AnimalGender.FEMALE,
+  weight: "",
+};
+export const initialValuesAddNewAnimalTest = {
+  name: "Bibi",
+  registration_number: "RO525525225233",
+  birth_date: new Date().toISOString(),
+  age: "7 ani",
+  entry_date: "25/02/2024",
+  breed: "angus",
+  color: "negru",
+  expiration_authorization: "25/12/2024",
+  image: "test",
+  number_of_authorization: "2525252525",
+  health_condition: "good",
+  registration_number_father: "RO525525225233",
+  registration_number_mother: "RO525525225233",
+  sex: AnimalGender.FEMALE,
+  weight: "250kg",
+};

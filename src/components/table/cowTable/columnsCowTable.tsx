@@ -1,10 +1,20 @@
 "use client";
 
+import AddNewAnimalForm from "@/components/form/AddNewAnimalForm";
+import Modal from "@/components/shared/Modal";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { CowSchema } from "@/database/schema";
+import { deletedCows } from "@/lib/actions/cow";
+import { AddNewAnimalType } from "@/lib/validation";
+import { DropdownMenuItem } from "@radix-ui/react-dropdown-menu";
 import { Column, ColumnDef } from "@tanstack/react-table";
-import { ArrowUpDown, MoreHorizontal } from "lucide-react";
+import { ArrowUpDown, Edit, MoreHorizontal, Trash } from "lucide-react";
 
 export const columnsCowTable: ColumnDef<CowSchema>[] = [
   {
@@ -28,6 +38,44 @@ export const columnsCowTable: ColumnDef<CowSchema>[] = [
     ),
     enableSorting: false,
     enableHiding: false,
+  },
+  {
+    accessorKey: "edit-delete",
+    header: () => <p></p>,
+    cell: ({ row }) => {
+      return (
+        <DropdownMenu>
+          <DropdownMenuTrigger>
+            <MoreHorizontal className="h-4 w-4" />
+          </DropdownMenuTrigger>
+          <DropdownMenuContent className="flex flex-col gap-2 p-0">
+            <Modal
+              triggerClassName="border-0 hover:bg-green-600 hover:text-white hover:ring-0 focus:ring-0 w-full text-green-600 rounded"
+              triggerTitle="Editare"
+              icon={<Edit className="size-4" />}
+            >
+              <AddNewAnimalForm
+                type="update"
+                defaultValues={row.original as AddNewAnimalType}
+              />
+            </Modal>
+
+            <DropdownMenuItem className="outline-none">
+              <Button
+                className="gap-2 text-red-600 w-full hover:bg-red-600 hover:text-white hover:ring-0 focus:ring-0"
+                onClick={() => {
+                  deletedCows([row.original.registration_number]);
+                }}
+                variant="ghost"
+              >
+                <Trash className="size-4 " />
+                Stergere
+              </Button>
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      );
+    },
   },
   {
     accessorKey: "registration_number",
