@@ -7,7 +7,7 @@ export enum AnimalGender {
 
 export const addNewAnimalSchema = z.object({
   name: z.string().min(2).max(50),
-  registration_number: z.string().min(14).max(15),
+  registration_number: z.string().min(14).max(15).nullable(),
   birth_date: z.string().min(10).max(20),
   age: z.string().min(1).max(50),
   entry_date: z.string().min(2).max(50),
@@ -41,3 +41,21 @@ export type AddNewAnimalNameField =
   | "breed"
   | "weight"
   | "health_condition";
+
+export const NewBornValidationSchema = z.object({
+  name: z.string().min(2).max(50),
+  registration_number: z.string().nullable(),
+  birth_date: z.string().min(10).max(20),
+  age: z.string().min(1).max(50),
+  entry_date: z.string().min(2).max(50),
+  sex: z.enum([AnimalGender.FEMALE, AnimalGender.MALE]),
+  breed: z.string().min(2).max(50),
+  number_of_authorization: z.string().optional(),
+  expiration_authorization: z.string().optional(),
+  registration_number_mother: z.string().optional(),
+  registration_number_father: z.string().optional(),
+  image: z.string().optional(),
+  weight: z.string().min(1).max(5),
+  color: z.string().min(2).max(50),
+  health_condition: z.string().min(2).max(50),
+});

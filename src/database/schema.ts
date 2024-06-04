@@ -1,12 +1,10 @@
-import { InferInsertModel } from "drizzle-orm";
-import { text, pgTable } from "drizzle-orm/pg-core";
+import { InferInsertModel, InferSelectModel } from "drizzle-orm";
+import { text, pgTable, serial, integer } from "drizzle-orm/pg-core";
 
 export const Cow = pgTable("cow", {
+  id: serial("id").primaryKey(),
   name: text("name").notNull(),
-  registration_number: text("registration_number")
-    .notNull()
-    .unique()
-    .primaryKey(),
+  registration_number: text("registration_number").unique(),
   breed: text("breed").notNull(),
   weight: text("weight").notNull(),
   health_condition: text("health_condition").notNull(),
@@ -23,3 +21,15 @@ export const Cow = pgTable("cow", {
 });
 
 export type CowSchema = InferInsertModel<typeof Cow>;
+export type CowTableSelect = InferSelectModel<typeof Cow>;
+
+export const NewBornTable = pgTable("new_born", {
+  id: serial("id").primaryKey(),
+  mainTableId: integer("main_table_id").references(() => Cow.id, {
+    onDelete: "cascade",
+  }),
+});
+
+export type NewBornInsertModel = InferInsertModel<typeof NewBornTable>;
+export type NewBornTableSelect = InferSelectModel<typeof NewBornTable>;
+export type NewBornTableSchema = CowSchema & NewBornTableSelect;

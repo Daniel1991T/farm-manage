@@ -20,28 +20,20 @@ import {
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import { useEffect, useRef, useState } from "react";
-import { TZSAError } from "zsa";
-import { SearchByRegNumberType } from "@/types";
+import { getMatchingCows } from "@/lib/actions/cow";
 
 type SelectSearchFormFieldProps = {
   form: UseFormReturn<AddNewAnimalType, any, undefined>;
   name: AddNewAnimalNameField;
   label: string;
   typeSelect: AnimalGender;
-  searchFn: ({
-    searchRegistrationNumber,
-    sex,
-  }: SearchByRegNumberType) => Promise<
-    [null, TZSAError] | [{ registration_number: string | null }[], null]
-  >;
 };
 
-export function SelectSearchFormField({
+export function SearchSelectFormField({
   form,
   name,
   label,
   typeSelect,
-  searchFn,
 }: SelectSearchFormFieldProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [search, setSearch] = useState<string>(form.getValues(name) || "");
@@ -51,12 +43,10 @@ export function SelectSearchFormField({
   useEffect(() => {
     const delayDebounceFn = setTimeout(async () => {
       if (search.length > 0) {
-        const response = await searchFn({
+        const response = await getMatchingCows({
+          registration_number: search,
           sex: typeSelect,
-          searchRegistrationNumber: search,
         });
-        console.log(response);
-
         if (response[0]) {
           setItems(response[0] as { registration_number: string }[]);
         }
@@ -66,8 +56,7 @@ export function SelectSearchFormField({
     }, 300);
 
     return () => clearTimeout(delayDebounceFn);
-  }, [search, searchFn, typeSelect]);
-  console.log(items);
+  }, [search, typeSelect]);
 
   useEffect(() => {
     const handleOutsideClick = (e: MouseEvent) => {
@@ -139,7 +128,6 @@ export function SelectSearchFormField({
                 : null}
             </div>
           )}
-
           <FormMessage />
         </FormItem>
       )}

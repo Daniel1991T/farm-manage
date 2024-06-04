@@ -13,7 +13,11 @@ import { calculateAge } from "@/lib/utils";
 import ImageUploaderInputField from "./ImageUploaderInputField";
 import { useEffect, useState } from "react";
 import SelectField from "./SelectField";
-import { AnimalGenderOption, initialValuesAddNewAnimal } from "@/constants";
+import {
+  AnimalGenderOption,
+  initialValuesAddNewAnimal,
+  initialValuesAddNewAnimalTest,
+} from "@/constants";
 import { addCowToDB, getMatchingCows, updateCow } from "@/lib/actions/cow";
 import { useServerAction } from "zsa-react";
 import { toast } from "sonner";
@@ -26,11 +30,13 @@ import { SearchByRegNumberType } from "@/types";
 type AddNewAnimalFormProps = {
   type: "add" | "update";
   defaultValues?: z.infer<typeof addNewAnimalSchema>;
+  id?: number;
 };
 
 export default function AddNewAnimalForm({
   type,
   defaultValues,
+  id,
 }: AddNewAnimalFormProps) {
   const [imageUrl, setImageUrl] = useState("");
   const [gender, setGender] = useState(AnimalGender.FEMALE);
@@ -40,7 +46,7 @@ export default function AddNewAnimalForm({
   // 1. Define your form.
   const form = useForm<z.infer<typeof addNewAnimalSchema>>({
     resolver: zodResolver(addNewAnimalSchema),
-    defaultValues: defaultValues || initialValuesAddNewAnimal,
+    defaultValues: defaultValues || initialValuesAddNewAnimalTest,
   });
 
   const handleDateChange = (date: string) => {
@@ -75,7 +81,7 @@ export default function AddNewAnimalForm({
     console.log(values);
     if (type === "update") {
       try {
-        const [data, error] = await updateCowDB(values);
+        const [data, error] = await updateCowDB({ ...values, id: id!! });
         if (error) {
           handleTZSAErrorMessage(error);
         }
@@ -120,7 +126,11 @@ export default function AddNewAnimalForm({
             <AddNewFormField form={form} label="Nume" name="name" />
             <AddNewFormField
               form={form}
-              disabled={type === "update"}
+              disabled={
+                type === "update" &&
+                form.getValues("registration_number") !== null &&
+                form.getValues("registration_number") !== ""
+              }
               label="Număr Crotaliu"
               name="registration_number"
             />

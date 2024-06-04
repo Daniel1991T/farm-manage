@@ -17,10 +17,11 @@ export const handleTZSAErrorMessage = (error: TZSAError) => {
       .trim()} există deja în baza de date.`;
   } else if (errorParse.code === "42P01") {
     userFriendlyMessage = `Eroare: Tablelul nu există.`;
+  } else if (errorParse.issues[0].code === "too_small") {
+    userFriendlyMessage = "Crotaliul trebuie să aibă cel puțin 14 caractere";
   } else {
     userFriendlyMessage = `Cod eroare: ${error.code} - ${errorParse.detail}`;
   }
-
   return toast.error(userFriendlyMessage, {
     className: "bg-red-500 text-white border-none",
     position: "top-center",

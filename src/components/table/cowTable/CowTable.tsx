@@ -46,6 +46,8 @@ export default function CowTable<TData, TValue>({
   const { isPending, execute: deleteCowsFromDB } = useServerAction(deletedCows);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({
     image: false,
+    number_of_authorization: false,
+    expiration_authorization: false,
   });
   const [sorting, setSorting] = useState<SortingState>([]);
   const [rowSelection, setRowSelection] = useState({});
@@ -68,11 +70,9 @@ export default function CowTable<TData, TValue>({
     const selected = table.getSelectedRowModel();
     const selectedItemId = selected.rows.map((value) => {
       const cowSchema = value.original as CowSchema;
-      const registration_number = cowSchema?.registration_number
-        ? cowSchema.registration_number
-        : ("" as string);
-      return registration_number;
-    }) as string[];
+      const id = cowSchema?.id ? cowSchema.id : ("" as string);
+      return id;
+    }) as number[];
     console.log(selectedItemId);
 
     const [_, error] = await deleteCowsFromDB(selectedItemId);

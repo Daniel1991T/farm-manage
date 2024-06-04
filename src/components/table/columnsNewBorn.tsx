@@ -9,14 +9,16 @@ import {
   DropdownMenuContent,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { CowSchema } from "@/database/schema";
+import { NewBornTableSchema } from "@/database/schema";
 import { deletedCows } from "@/lib/actions/cow";
 import { AddNewAnimalType } from "@/lib/validation";
 import { DropdownMenuItem } from "@radix-ui/react-dropdown-menu";
 import { Column, ColumnDef } from "@tanstack/react-table";
 import { ArrowUpDown, Edit, MoreHorizontal, Trash } from "lucide-react";
+import AnimalForm from "../form/AnimalForm";
+import { deleteNewBorn, updateNewBorn } from "@/lib/actions/newBorn";
 
-export const columnsCowTable: ColumnDef<CowSchema>[] = [
+export const columnsNewBorn: ColumnDef<NewBornTableSchema>[] = [
   {
     id: "select",
     header: ({ table }) => (
@@ -54,10 +56,11 @@ export const columnsCowTable: ColumnDef<CowSchema>[] = [
               triggerTitle="Editare"
               icon={<Edit className="size-4" />}
             >
-              <AddNewAnimalForm
+              <AnimalForm
+                updateFn={updateNewBorn}
                 type="update"
+                id={row.original.mainTableId!!}
                 defaultValues={row.original as AddNewAnimalType}
-                id={row.original.id}
               />
             </Modal>
 
@@ -65,7 +68,7 @@ export const columnsCowTable: ColumnDef<CowSchema>[] = [
               <Button
                 className="gap-2 text-red-600 w-full hover:bg-red-600 hover:text-white hover:ring-0 focus:ring-0"
                 onClick={() => {
-                  deletedCows([row.original.id!!]);
+                  deleteNewBorn([row.original.id!!]);
                 }}
                 variant="ghost"
               >
@@ -174,7 +177,7 @@ export const columnsCowTable: ColumnDef<CowSchema>[] = [
 
 type HeaderColumnProps = {
   label: string;
-  column: Column<CowSchema>;
+  column: Column<NewBornTableSchema>;
 };
 
 function HeaderColumn({ label, column }: HeaderColumnProps) {
