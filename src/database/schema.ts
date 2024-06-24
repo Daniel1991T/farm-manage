@@ -33,3 +33,21 @@ export const NewBornTable = pgTable("new_born", {
 export type NewBornInsertModel = InferInsertModel<typeof NewBornTable>;
 export type NewBornTableSelect = InferSelectModel<typeof NewBornTable>;
 export type NewBornTableSchema = CowSchema & NewBornTableSelect;
+
+export const FarmsTable = pgTable("farms", {
+  id: serial("id").primaryKey(),
+  userId: text("user_id").notNull().unique(),
+  email: text("email").notNull(),
+  exploitation_code: text("exploitation_code"),
+  phone: text("phone"),
+  administrator: text("administrator"),
+  farm_name: text("farm_name").notNull(),
+  location: text("location"),
+  region: text("region"),
+  country: text("country"),
+  address: text("address"),
+  description: text("description"),
+});
+
+export type FarmsInsertModel = InferInsertModel<typeof FarmsTable>;
+export type FarmsTableSelect = InferSelectModel<typeof FarmsTable>;
