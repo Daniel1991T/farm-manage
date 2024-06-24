@@ -96,4 +96,5 @@ export const deleteNewBorn = createServerAction()
       throw error;
     });
     revalidatePath("/born");
+    revalidatePath("/all-animals");
   });

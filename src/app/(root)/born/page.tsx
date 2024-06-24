@@ -14,19 +14,19 @@ export default async function BornCattlePage() {
   }
 
   return (
-    <MaxWidthWrapper>
+    <div className="w-full">
       <div className="flex justify-between items-center w-full">
         <h1 className="text-2xl font-bold">Fătări curente:</h1>
         <Modal triggerTitle="Aduga fatare" triggerClassName="w-fit">
           <AnimalForm submitFn={addNewBornToDB} type="add" />
         </Modal>
       </div>
-      <div>
+      <div className="w-full py-10">
         <CowTable
           data={newBorn as NewBornTableSchema[]} // Cast newBorn to NewBornTableSchema[]
           columns={columnsNewBorn}
         />
       </div>
-    </MaxWidthWrapper>
+    </div>
   );
 }

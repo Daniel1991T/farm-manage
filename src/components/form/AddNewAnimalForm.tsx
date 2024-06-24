@@ -126,11 +126,6 @@ export default function AddNewAnimalForm({
             <AddNewFormField form={form} label="Nume" name="name" />
             <AddNewFormField
               form={form}
-              disabled={
-                type === "update" &&
-                form.getValues("registration_number") !== null &&
-                form.getValues("registration_number") !== ""
-              }
               label="Număr Crotaliu"
               name="registration_number"
             />

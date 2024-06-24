@@ -1,12 +1,12 @@
 import Image from "next/image";
 import MaxWidthWrapper from "../MaxWidthWrapper";
-import { SignInButton, SignUpButton, SignedIn, SignedOut } from "@clerk/nextjs";
+import { SignInButton, SignUpButton, SignedOut } from "@clerk/nextjs";
 import Link from "next/link";
 import { Button } from "../ui/button";
 
 export default function Navbar() {
   return (
-    <nav className="py-4 w-full">
+    <nav className="py-4 w-full fixed z-50 shadow-md shadow-casal-800">
       <MaxWidthWrapper className="flex items-center justify-between">
         <Link href="/">
           <div className="flex items-center justify-center">
@@ -17,7 +17,7 @@ export default function Navbar() {
               height={80}
             />
             <div className="hidden md:flex items-center justify-center ">
-              <h2 className="font-bold text-green-600 text-4xl">Farm</h2>
+              <h2 className="font-bold text-casal-800 text-4xl">Farm</h2>
               <p className="text-4xl">Manager</p>
             </div>
           </div>
