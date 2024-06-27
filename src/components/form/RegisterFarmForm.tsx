@@ -27,14 +27,10 @@ import WidthFullWrapper from "../wrapper/WidthFullWrapper";
 import RegisterFarmInputField from "./RegisterFarmInputField";
 import { Textarea } from "../ui/textarea";
 import { toast } from "sonner";
-import {
-  handleRegisterError,
-  handleTZSAErrorMessage,
-} from "@/lib/error-server";
+import { handleRegisterError } from "@/lib/error-server";
 
 type RegisterFarmFormProps = {
-  submitFn?: (values: InputRegisterFarmType) => TDataOrError<any>;
-  updateFn?: (values: UpdateFarmFnType) => TDataOrError<any>;
+  submitFn: (values: InputRegisterFarmType) => TDataOrError<any>;
   type: "add" | "update";
   id?: number;
   defaultValues?: z.infer<typeof AddFarmValidationSchema>;
@@ -43,15 +39,11 @@ type RegisterFarmFormProps = {
 
 export default function RegisterFarmForm({
   submitFn,
-  updateFn,
   userId,
   defaultValues,
   type,
 }: RegisterFarmFormProps) {
-  const { isPending, execute: submit } = useServerAction(registerFarmToDB);
-  const { isPending: isUpdatePending, execute: update } = useServerAction(
-    updateFn!!
-  );
+  const { isPending, execute: submit } = useServerAction(submitFn);
 
   const form = useForm<z.infer<typeof AddFarmValidationSchema>>({
     resolver: zodResolver(AddFarmValidationSchema),
@@ -60,23 +52,12 @@ export default function RegisterFarmForm({
 
   // 2. Define a submit handler.
   const onSubmit = async (values: z.infer<typeof AddFarmValidationSchema>) => {
-    console.log(values);
-    if (type === "add") {
-      const [data, error] = await submit({ ...values });
-      if (data?.success) {
-        toast.success("Ferma a fost adaugata cu succes");
-      }
-      if (error) {
-        handleRegisterError(error);
-      }
-    } else {
-      const [data, error] = await update({ ...values });
-      if (data?.success) {
-        toast.success("Profilul fermei a fost actualizata cu succes");
-      }
-      if (error) {
-        handleRegisterError(error);
-      }
+    const [data, error] = await submit({ ...values });
+    if (data?.success) {
+      toast.success("Ferma a fost adaugata cu succes");
+    }
+    if (error) {
+      handleRegisterError(error);
     }
   };
 
@@ -165,7 +146,13 @@ export default function RegisterFarmForm({
           />
         </WidthFullWrapper>
         <Button className="bg-casal-800 hover:bg-casal-950" type="submit">
-          {isPending ? "...Incarcare" : "Creare ferma"}
+          {type === "add"
+            ? isPending
+              ? "...Incarcare"
+              : "Creare ferma"
+            : isPending
+            ? "...Incarcare"
+            : "Actualizare ferma"}
         </Button>
       </form>
     </Form>

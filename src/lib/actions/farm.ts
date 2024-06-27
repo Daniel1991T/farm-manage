@@ -9,13 +9,14 @@ import db from "@/database/drizzle";
 import { FarmsTable } from "@/database/schema";
 import { eq } from "drizzle-orm";
 import { z } from "zod";
-import { get } from "http";
+import { revalidatePath } from "next/cache";
 
 export const registerFarmToDB = createServerAction()
   .input(AddFarmValidationSchema)
   .handler(async ({ input }) => {
     console.log(input);
     await db.insert(FarmsTable).values(input).execute();
+    revalidatePath("/edit-profile");
     return { success: true };
   });
 
@@ -32,6 +33,7 @@ export const updateFarmInDB = createServerAction()
       .set(input)
       .where(eq(FarmsTable.userId, input.userId))
       .execute();
+    revalidatePath("/edit-profile");
     return { success: true };
   });
 
@@ -58,7 +60,7 @@ export const getFarmDetails = createServerAction()
         address: item.address || "",
         description: item.description || "",
       };
-    });
+    })[0];
   });
 
 export type ReturnFarmDetailsType = inferServerActionReturnData<

@@ -11,9 +11,9 @@ export default async function EditProfile() {
     <section>
       <RegisterFarmForm
         type="update"
-        defaultValues={defaultValues[0] ? defaultValues[0][0] : undefined}
+        defaultValues={defaultValues[0] ? defaultValues[0] : undefined}
         userId={userId}
-        updateFn={updateFarmInDB}
+        submitFn={updateFarmInDB}
       />
     </section>
   );
