@@ -6,8 +6,8 @@ import { Button } from "../ui/button";
 
 export default function Navbar() {
   return (
-    <nav className="py-4 w-full fixed z-50 shadow-md shadow-casal-800">
-      <MaxWidthWrapper className="flex items-center justify-between">
+    <nav className="py-4 w-full fixed z-50 shadow-md shadow-casal-800 mx-auto">
+      <MaxWidthWrapper className="flex items-center justify-between max-w-xl">
         <Link href="/">
           <div className="flex items-center justify-center">
             <Image

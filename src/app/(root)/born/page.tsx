@@ -1,4 +1,3 @@
-import MaxWidthWrapper from "@/components/MaxWidthWrapper";
 import AnimalForm from "@/components/form/AnimalForm";
 import Modal from "@/components/shared/Modal";
 import { columnsNewBorn } from "@/components/table/columnsNewBorn";

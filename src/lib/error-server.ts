@@ -27,3 +27,15 @@ export const handleTZSAErrorMessage = (error: TZSAError) => {
     position: "top-center",
   });
 };
+
+export const handleRegisterError = (error: TZSAError) => {
+  const errorParse = JSON.parse(error.data);
+  let userFriendlyMessage = "A apărut o eroare necunoscută.";
+  if (errorParse.code === "23505") {
+    userFriendlyMessage = `Deja există o fermă creata de pe acest cont, daca vreati sa faceti modificari duceti-va pe pagina de profil.`;
+  }
+  return toast.error(userFriendlyMessage, {
+    className: "bg-red-500 text-white border-none",
+    position: "top-center",
+  });
+};

@@ -25,22 +25,7 @@ export const addNewAnimalSchema = z.object({
 
 export type AddNewAnimalType = z.infer<typeof addNewAnimalSchema>;
 
-export type AddNewAnimalNameField =
-  | "name"
-  | "registration_number"
-  | "birth_date"
-  | "age"
-  | "entry_date"
-  | "sex"
-  | "expiration_authorization"
-  | "image"
-  | "number_of_authorization"
-  | "registration_number_father"
-  | "registration_number_mother"
-  | "color"
-  | "breed"
-  | "weight"
-  | "health_condition";
+export type AddNewAnimalNameField = keyof AddNewAnimalType;
 
 export const NewBornValidationSchema = z.object({
   name: z.string().min(2).max(50),
@@ -73,3 +58,20 @@ export const AddFarmValidationSchema = z.object({
   address: z.string().max(50),
   description: z.string().max(250),
 });
+
+export type AddFarmType = z.infer<typeof AddFarmValidationSchema>;
+export const FarmValidationDefaultValues = {
+  userId: "",
+  email: "",
+  exploitation_code: "",
+  phone: "",
+  administrator: "",
+  farm_name: "",
+  location: "",
+  region: "",
+  country: "",
+  address: "",
+  description: "",
+};
+
+export type FarmNameField = keyof AddFarmType;

@@ -20,7 +20,7 @@ export default async function AllAnimalsPage() {
   return (
     <section className="flex flex-col mx-0 max-w-screen-lg lg:max-w-screen-xl">
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold">Toate Vacile:</h1>
+        <h1 className="text-2xl font-bold">Evidența Animalelor din Fermă</h1>
         <Modal triggerTitle="Adauga animal nou" triggerClassName="w-fit">
           <AddNewAnimalForm type="add" />
         </Modal>

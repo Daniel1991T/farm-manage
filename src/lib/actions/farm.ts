@@ -1,4 +1,5 @@
-import { createServerAction } from "zsa";
+"use server";
+import { createServerAction, inferServerActionInput } from "zsa";
 import { AddFarmValidationSchema } from "../validation";
 import db from "@/database/drizzle";
 import { FarmsTable } from "@/database/schema";
@@ -10,3 +11,7 @@ export const registerFarmToDB = createServerAction()
     await db.insert(FarmsTable).values(input).execute();
     return { success: true };
   });
+
+export type InputRegisterFarmType = inferServerActionInput<
+  typeof registerFarmToDB
+>;
