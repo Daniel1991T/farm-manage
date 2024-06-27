@@ -1,13 +1,15 @@
 import Image from "next/image";
 import MaxWidthWrapper from "../MaxWidthWrapper";
-import { SignInButton, SignUpButton, SignedOut } from "@clerk/nextjs";
+import { SignInButton, SignUpButton, SignedIn, SignedOut } from "@clerk/nextjs";
 import Link from "next/link";
 import { Button } from "../ui/button";
+import { UserCog } from "lucide-react";
+import ProfileMenu from "../ProfileMenu";
 
 export default function Navbar() {
   return (
     <nav className="py-4 w-full fixed z-50 shadow-md shadow-casal-800 mx-auto">
-      <MaxWidthWrapper className="flex items-center justify-between max-w-xl">
+      <MaxWidthWrapper className="flex items-center justify-between w-full">
         <Link href="/">
           <div className="flex items-center justify-center">
             <Image
@@ -42,6 +44,9 @@ export default function Navbar() {
             </SignUpButton>
           </div>
         </SignedOut>
+        <SignedIn>
+          <ProfileMenu />
+        </SignedIn>
       </MaxWidthWrapper>
     </nav>
   );

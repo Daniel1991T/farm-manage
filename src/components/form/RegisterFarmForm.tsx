@@ -18,8 +18,11 @@ import {
 } from "../ui/form";
 import { useServerAction } from "zsa-react";
 import { TDataOrError } from "zsa";
-import { UpdateFnType } from "@/lib/actions/newBorn";
-import { InputRegisterFarmType, registerFarmToDB } from "@/lib/actions/farm";
+import {
+  InputRegisterFarmType,
+  UpdateFarmFnType,
+  registerFarmToDB,
+} from "@/lib/actions/farm";
 import WidthFullWrapper from "../wrapper/WidthFullWrapper";
 import RegisterFarmInputField from "./RegisterFarmInputField";
 import { Textarea } from "../ui/textarea";
@@ -31,10 +34,10 @@ import {
 
 type RegisterFarmFormProps = {
   submitFn?: (values: InputRegisterFarmType) => TDataOrError<any>;
-  updateFn?: (values: UpdateFnType) => TDataOrError<any>;
+  updateFn?: (values: UpdateFarmFnType) => TDataOrError<any>;
   type: "add" | "update";
   id?: number;
-  defaultValues?: z.infer<typeof NewBornValidationSchema>;
+  defaultValues?: z.infer<typeof AddFarmValidationSchema>;
   userId: string;
 };
 
@@ -42,6 +45,7 @@ export default function RegisterFarmForm({
   submitFn,
   updateFn,
   userId,
+  defaultValues,
   type,
 }: RegisterFarmFormProps) {
   const { isPending, execute: submit } = useServerAction(registerFarmToDB);
@@ -51,7 +55,7 @@ export default function RegisterFarmForm({
 
   const form = useForm<z.infer<typeof AddFarmValidationSchema>>({
     resolver: zodResolver(AddFarmValidationSchema),
-    defaultValues: { ...FarmValidationDefaultValues, userId },
+    defaultValues: defaultValues || { ...FarmValidationDefaultValues, userId },
   });
 
   // 2. Define a submit handler.
@@ -61,6 +65,14 @@ export default function RegisterFarmForm({
       const [data, error] = await submit({ ...values });
       if (data?.success) {
         toast.success("Ferma a fost adaugata cu succes");
+      }
+      if (error) {
+        handleRegisterError(error);
+      }
+    } else {
+      const [data, error] = await update({ ...values });
+      if (data?.success) {
+        toast.success("Profilul fermei a fost actualizata cu succes");
       }
       if (error) {
         handleRegisterError(error);
